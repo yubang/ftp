@@ -7,7 +7,7 @@ ftp客户端实现核心方法
 2014-04-23
 """
 
-import socket,re,time,threading
+import socket,re,time,os
 
 
 class Client(object):
@@ -56,8 +56,7 @@ class Client(object):
             print u"密码不正确！"
             exit()
         
-    
-    def __getFileList(self):
+    def getFileList(self):
         "获取文件列表"
         
         r=[]
@@ -100,4 +99,34 @@ class Client(object):
     def closeConnection(self):
         "关闭与ftp服务器的连接，显式调用"
         self.__socket.close()
-
+    def downloadFile(self,path):
+        "从ftp服务器下载文件"
+        dirPath=os.path.dirname(path)
+        fileName=path.replace(dirPath+"/","")
+        print u"客户端信息：尝试切换目录到",dirPath
+        self.__sendCommand("CWD %s\r\n"%(dirPath))
+        
+        #处理本地文件
+        t="./download/"+dirPath
+        if not os.path.exists(t):
+            os.makedirs(t)
+        t=t+"/"+fileName
+        
+        
+        #从服务器拉取数据
+        s=self.__pasv()#被动模式
+        result=self.__sendCommand("RETR %s\r\n"%(fileName))
+        
+        if result['status'] !=5:
+            fp=open(t,"w")
+            while True:
+                data=s.recv(255)
+                if data == None or data == "":
+                    break
+                fp.write(data)
+            fp.close()    
+        else:
+            print "拉取文件失败！"
+        s.close()
+        
+        

@@ -34,3 +34,4 @@ def debug():
     "调试使用"
     obj=core.Client()
     obj.connectServer("127.0.0.1",21)
+    obj.downloadFile("/upload/plan.doc")
