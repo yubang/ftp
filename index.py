@@ -28,12 +28,12 @@ def init():
         elif command == "2":
             jobs.uploadFile()
         elif command == "3":
-            print u"下载文件\n"
+            jobs.downloadFile()
         else:
             print u"无效命令请重新输入\n"
     print u"程序已经退出！"
     
     
 if __name__ == "__main__":
-    jobs.debug()
-    #init()
+    #jobs.debug()
+    init()
