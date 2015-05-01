@@ -8,9 +8,14 @@
 """
 
 
+from lib import jobs
+import os
+
 def init():
     "主方法"
+    os.system("clear")
     while True:
+        
         print u"0.退出程序"
         print u"1.打开远程ftp连接"
         print u"2.上传文件到ftp服务器"
@@ -21,7 +26,7 @@ def init():
         elif command == "1":
             print u"建立连接\n"
         elif command == "2":
-            print u"上传文件\n"
+            jobs.uploadFile()
         elif command == "3":
             print u"下载文件\n"
         else:
@@ -30,4 +35,5 @@ def init():
     
     
 if __name__ == "__main__":
-    init()
+    jobs.debug()
+    #init()
