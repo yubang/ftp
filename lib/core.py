@@ -64,7 +64,7 @@ class Client(object):
         #被动模式
         s=self.__pasv()
         self.__sendCommand("LIST\r\n")
-        print self.__socket.recv(255).strip()
+        print "服务器返回信息：",self.__socket.recv(255).strip()
         while True:
             data=s.recv(255).strip()
             if data == None or data =='':
@@ -124,9 +124,44 @@ class Client(object):
                 if data == None or data == "":
                     break
                 fp.write(data)
-            fp.close()    
+            fp.close()
+            s.close()
+            print "服务器返回信息：",self.__socket.recv(255).strip()       
         else:
-            print "拉取文件失败！"
-        s.close()
+            print u"拉取文件失败！"
+            s.close()
         
+
+    def uploadFile(self,path,targetPath):
+        "上传文件"
+        dirPath=os.path.dirname(targetPath)
+        fileName=targetPath.replace(dirPath+"/","")
         
+        #尝试递归创建文件夹
+        i=1
+        t=dirPath.split("/")
+        while i <len(t):
+            print u"客户端信息：尝试创建目录",t[i]
+            self.__sendCommand("MKD %s\r\n"%(t[i]))
+            print u"客户端信息：尝试切换目录到",t[i]
+            self.__sendCommand("CWD %s\r\n"%(t[i]))
+            i+=1
+        
+        #开始上传文件
+        if not os.path.exists(path):
+            print u"原文件不存在！"
+        else:
+            s=self.__pasv()#被动模式
+            result=self.__sendCommand("STOR %s\r\n"%(fileName))
+            if result['status'] == 1:
+                fp=open(path,"rb")
+                for temp in fp:
+                    s.send(temp)    
+                fp.close()
+                s.close()
+                print "服务器返回信息：",self.__socket.recv(255).strip()   
+            else:
+                s.close()
+                print u"上传文件失败！"
+            
+                  
