@@ -7,7 +7,7 @@ ftp客户端实现核心方法
 2014-04-23
 """
 
-import socket,re,time
+import socket,re,time,threading
 
 
 class Client(object):
@@ -32,19 +32,23 @@ class Client(object):
         pass
     def __pasv(self):
         "被动模式"
-        if self.__fileSocket != None:
-            self.__fileSocket.close()
         #尝试以被动模式连接ftp
         ip,port=self.__getPortAndIp(self.__sendCommand("PASV\r\n")['message'])
-        print u"连接",ip,":",port
-        self.__fileSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.__fileSocket.connect((ip,port))
+        s=self.__getSocket(ip,port)
+        return s
         
+    def __getSocket(self,ip,port):
+        "获取一个连接"
+        s=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect((ip,port))
+        return s
     def __login(self):
         "登录ftp服务器"
         print u"尝试连接到ftp服务器"
         data=self.__socket.recv(255).strip()
         data=self.__dealMessage(data)
+        if data['status'] !=2:
+            print u"无法连接服务器！"
         
         #尝试登陆
         self.__sendCommand("USER FTP\r\n")
@@ -52,13 +56,24 @@ class Client(object):
             print u"密码不正确！"
             exit()
         
-        self.__sendCommand("PWD\r\n")
+    
+    def __getFileList(self):
+        "获取文件列表"
+        
+        r=[]
         
         #被动模式
-        self.__pasv()
+        s=self.__pasv()
         self.__sendCommand("LIST\r\n")
         print self.__socket.recv(255).strip()
-        
+        while True:
+            data=s.recv(255).strip()
+            if data == None or data =='':
+                break
+            r.append(data)
+        s.close()
+        return r
+           
                 
     def __dealMessage(self,data):
         "处理ftp服务器返回的信息"
@@ -85,4 +100,4 @@ class Client(object):
     def closeConnection(self):
         "关闭与ftp服务器的连接，显式调用"
         self.__socket.close()
-        self.__fileSocket.close()
+
