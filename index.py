@@ -24,7 +24,7 @@ def init():
         if command == "0":
             break
         elif command == "1":
-            print u"建立连接\n"
+            jobs.baseOption()
         elif command == "2":
             jobs.uploadFile()
         elif command == "3":

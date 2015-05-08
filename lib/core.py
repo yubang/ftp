@@ -51,8 +51,8 @@ class Client(object):
             print u"无法连接服务器！"
         
         #尝试登陆
-        self.__sendCommand("USER FTP\r\n")
-        if self.__sendCommand("PASS FTP\r\n")['status'] != 2:
+        self.__sendCommand("USER %s\r\n"%(self.__ftpUser))
+        if self.__sendCommand("PASS %s\r\n"%(self.__ftpPassword))['status'] != 2:
             print u"密码不正确！"
             exit()
         
@@ -90,10 +90,12 @@ class Client(object):
         
         return str(d[0])+"."+str(d[1])+"."+str(d[2])+"."+str(d[3]),d[4]*256+d[5]
         
-    def connectServer(self,ftpHost,ftpPort):
+    def connectServer(self,ftpHost,ftpPort,ftpUser,ftpPassword):
         "连接ftp服务器，显式调用"
         self.__ftpHost=ftpHost
         self.__ftpPort=ftpPort
+        self.__ftpUser=ftpUser
+        self.__ftpPassword=ftpPassword
         self.__initConnect()
         self.__login()
     def closeConnection(self):
@@ -131,7 +133,15 @@ class Client(object):
             print u"拉取文件失败！"
             s.close()
         
-
+    
+    def sendCommand(self,command):
+        "发送指令"
+        print command
+        s=self.__pasv()#被动模式
+        r=self.__sendCommand(command)
+        s.close()
+        return r    
+    
     def uploadFile(self,path,targetPath):
         "上传文件"
         dirPath=os.path.dirname(targetPath)

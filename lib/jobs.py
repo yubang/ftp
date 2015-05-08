@@ -6,7 +6,9 @@
 2015-05-01
 """
 
+import re
 from lib import core
+
 
 def init():
     "封装ftp服务器信息"
@@ -15,13 +17,36 @@ def init():
     ftpHost=raw_input("请输入ftp主机：")
     ftpPort=int(raw_input("请输入ftp端口："))
     
-    obj.connectServer(ftpHost,ftpPort)
+    ftpUser=raw_input("请输入ftp用户名（匿名输入ftp）：")
+    ftpPassword=raw_input("请输入ftp密码（匿名输入ftp）：")
+    
+    obj.connectServer(ftpHost,ftpPort,ftpUser,ftpPassword)
     return obj
 
 
 def destroy(obj):
     "释放连接"
     obj.closeConnection()
+
+def baseOption():
+    "实现连接ftp服务器基本操作"
+    obj=init()
+    print u"输入help显示可用指令"
+    while True:
+        option=raw_input("请输入指令：")
+        if option == "quit":
+            break
+        elif option == "ls":
+            fps=obj.getFileList()
+            for fp in fps:
+                print fp
+        elif re.search(r'^[cC][dD][\s]/.*',option):
+            print obj.sendCommand(re.sub(r'^[cC][dD]',"CWD",option).encode("UTF-8")+"\r\n")
+        elif option == "pwd":
+            print obj.sendCommand("PWD \r\n")
+        
+    destroy(obj)
+    
 
 def uploadFile():
     "上传文件到ftp服务器"
