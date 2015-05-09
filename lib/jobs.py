@@ -35,15 +35,26 @@ def baseOption():
     while True:
         option=raw_input("请输入指令：")
         if option == "quit":
+            #退出程序
             break
         elif option == "ls":
+            #列出目录下的文件
             fps=obj.getFileList()
             for fp in fps:
                 print fp
         elif re.search(r'^[cC][dD][\s]/.*',option):
+            #切换目录
             print obj.sendCommand(re.sub(r'^[cC][dD]',"CWD",option).encode("UTF-8")+"\r\n")
         elif option == "pwd":
+            #打印当前目录
             print obj.sendCommand("PWD \r\n")
+        elif re.search(r'^[mM][kK][dD][iI][rR]\s.+',option):
+            #创建目录
+            print obj.sendCommand(re.sub(r'^[mM][kK][dD][iI][rR]','MKD',option).encode("UTF-8")+"\r\n")
+        elif re.search(r'^[rR][mM][dD][iI][rR]\s.+',option):
+            #删除目录
+            print obj.sendCommand("PWD \r\n")
+        
         
     destroy(obj)
     
