@@ -136,11 +136,9 @@ class Client(object):
     
     def sendCommand(self,command):
         "发送指令"
-        print command
-        s=self.__pasv()#被动模式
         r=self.__sendCommand(command)
-        s.close()
         return r    
+    
     
     def uploadFile(self,path,targetPath):
         "上传文件"
