@@ -42,7 +42,7 @@ def baseOption():
             fps=obj.getFileList()
             for fp in fps:
                 print fp
-        elif re.search(r'^[cC][dD][\s]/.*',option):
+        elif re.search(r'^[cC][dD][\s].+',option):
             #切换目录
             print obj.sendCommand(re.sub(r'^[cC][dD]',"CWD",option).encode("UTF-8")+"\r\n")
         elif option == "pwd":
@@ -53,8 +53,10 @@ def baseOption():
             print obj.sendCommand(re.sub(r'^[mM][kK][dD][iI][rR]','MKD',option).encode("UTF-8")+"\r\n")
         elif re.search(r'^[rR][mM][dD][iI][rR]\s.+',option):
             #删除目录
-            print obj.sendCommand("PWD \r\n")
-        
+            print obj.sendCommand(re.sub(r'^[rR][mM][dD][iI][rR]','RMD',option)+"\r\n")
+        elif re.search(r'^[rR][mM]\s.+',option):
+            #删除文件
+            print obj.sendCommand(re.sub(r'^[rR][mM]','DELE',option)+"\r\n")       
         
     destroy(obj)
     
