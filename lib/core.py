@@ -22,7 +22,15 @@ class Client(object):
         self.__socket.connect((self.__ftpHost, self.__ftpPort))
     def __sendCommand(self,command):
         "发送指令到ftp服务器"
-        self.__socket.send(command)
+        try:
+            self.__socket.send(command)
+        except:
+            #可能服务器关闭连接
+            print u"连接已经断开，正在尝试重新连接"
+            self.__initConnect()
+            self.__login()
+            self.__socket.send(command)
+            
         data=self.__socket.recv(255).strip()
         data=self.__dealMessage(data)
         print u"服务器返回信息：",data['message']
