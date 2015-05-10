@@ -136,7 +136,8 @@ class Client(object):
                 fp.write(data)
             fp.close()
             s.close()
-            print "服务器返回信息：",self.__socket.recv(255).strip()       
+            print u"服务器返回信息：",self.__socket.recv(255).strip()
+            print u"下载文件完成！"       
         else:
             print u"拉取文件失败！"
             s.close()
@@ -152,6 +153,9 @@ class Client(object):
         "上传文件"
         dirPath=os.path.dirname(targetPath)
         fileName=targetPath.replace(dirPath+"/","")
+        
+        #切换到跟目录
+        self.__sendCommand("CWD /\r\n")
         
         #尝试递归创建文件夹
         i=1
@@ -176,6 +180,7 @@ class Client(object):
                 fp.close()
                 s.close()
                 print "服务器返回信息：",self.__socket.recv(255).strip()   
+                print u"文件上传成功！"
             else:
                 s.close()
                 print u"上传文件失败！"
