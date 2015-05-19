@@ -6,7 +6,7 @@
 2015-05-01
 """
 
-import re,os
+import re,os,platform
 from lib import core
 
 
@@ -14,11 +14,15 @@ def init():
     "封装ftp服务器信息"
     obj=core.Client()
     
-    ftpHost=raw_input("请输入ftp主机：")
-    ftpPort=int(raw_input("请输入ftp端口："))
+    print u"请输入ftp主机："
+    ftpHost=raw_input()
+    print u"请输入ftp端口："
+    ftpPort=int(raw_input())
     
-    ftpUser=raw_input("请输入ftp用户名（匿名输入FTP）：")
-    ftpPassword=raw_input("请输入ftp密码（匿名输入FTP）：")
+    print u"请输入ftp用户名（匿名输入FTP）："
+    ftpUser=raw_input()
+    print u"请输入ftp密码（匿名输入FTP）："
+    ftpPassword=raw_input()
     
     obj.connectServer(ftpHost,ftpPort,ftpUser,ftpPassword)
     return obj
@@ -32,8 +36,6 @@ def appHelp():
     "输出帮助信息"
     print u""
     print u"--------------帮助---------------"
-    print u"quit：退出程序"
-    print u"help：帮助"
     print u"ls：列出当前目录文件列表"
     print u"cd 路径：切换工作路径"
     print u"pwd：打印工作路径"
@@ -41,6 +43,10 @@ def appHelp():
     print u"rmdir 文件夹路径：删除文件夹"
     print u"rm 文件路径：删除文件"
     print u"clear：清屏"
+    print u"upload 本地文件路径 服务器文件路径 ：上传文件"
+    print u"download 服务器文件路径 ：下载文件"
+    print u"quit：退出程序"
+    print u"help：帮助"
     print u"--------------帮助---------------"
     print u""
     
@@ -104,7 +110,10 @@ def baseOption():
             appHelp()
         elif option == "clear":
             #清屏
-            os.system("clear")
+            if platform.system() == "Linux":
+                os.system("clear")
+            else:
+                os.system("cls")
         else:
             print u"你的输入有误，请重新输入！"
                 
@@ -114,9 +123,10 @@ def baseOption():
 def uploadFile():
     "上传文件到ftp服务器"
     obj=init()
-    
-    sourcePath=raw_input("请输入原文件路径：")
-    targetPath=raw_input("请输入目标文件路径：")
+    print u"请输入原文件路径："
+    sourcePath=raw_input()
+    print u"请输入目标文件路径："
+    targetPath=raw_input()
     obj.uploadFile(sourcePath,targetPath)
     
     destroy(obj)
@@ -124,7 +134,8 @@ def uploadFile():
 def downloadFile():
     "从ftp服务器下载文件"
     obj=init()
-    targetPath=raw_input("请输入ftp文件路径：")
+    print u"请输入ftp文件路径："
+    targetPath=raw_input()
     obj.downloadFile(targetPath)
     destroy(obj)    
 

@@ -12,10 +12,9 @@ import socket,re,time,os
 
 class Client(object):
     def __init__(self):
-        print u"初始化对象"
         self.__fileSocket=None
     def __del__(self):
-        print u"对象回收"
+        pass
     def __initConnect(self):
         "初始化连接"
         self.__socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -117,7 +116,7 @@ class Client(object):
         self.__sendCommand("CWD %s\r\n"%(dirPath))
         
         #处理本地文件
-        t="./download/"+dirPath
+        t="./tmp/"+dirPath
         if not os.path.exists(t):
             os.makedirs(t)
         t=t+"/"+fileName
