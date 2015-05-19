@@ -25,7 +25,7 @@ class Client(object):
             self.__socket.send(command)
         except:
             #可能服务器关闭连接
-            print u"连接已经断开，正在尝试重新连接"
+            print u"ftp服务器连接已经断开，正在尝试重新连接"
             self.__initConnect()
             self.__login()
             self.__socket.send(command)
@@ -71,7 +71,7 @@ class Client(object):
         #被动模式
         s=self.__pasv()
         self.__sendCommand("LIST\r\n")
-        print "服务器返回信息：",self.__socket.recv(255).strip()
+        print u"服务器返回信息：",self.__socket.recv(255).strip()
         while True:
             data=s.recv(255).strip()
             if data == None or data =='':
@@ -178,7 +178,7 @@ class Client(object):
                     s.send(temp)    
                 fp.close()
                 s.close()
-                print "服务器返回信息：",self.__socket.recv(255).strip()   
+                print u"服务器返回信息：",self.__socket.recv(255).strip()   
                 print u"文件上传成功！"
             else:
                 s.close()
